@@ -1,0 +1,28 @@
+# Przykład unit systemd dla Validator Staking frontendu (port 3001).
+# Skopiuj do /etc/systemd/system/staking-validator-frontend.service i dostosuj ścieżki.
+#
+#   sudo cp staking-validator-frontend.service.example /etc/systemd/system/staking-validator-frontend.service
+#   sudo nano /etc/systemd/system/staking-validator-frontend.service   # popraw User, WorkingDirectory
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable staking-validator-frontend
+#   sudo systemctl start staking-validator-frontend
+#
+# Nginx musi proxy'ować /validator-staking na 127.0.0.1:3001 (zob. nginx-test25.mynode.uk.conf).
+
+[Unit]
+Description=Validator Staking Frontend (Next.js, port 3001)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/staking-contract/new-shared-node-staking/frontend
+ExecStart=/usr/bin/npm run start
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3001
+
+[Install]
+WantedBy=multi-user.target
